@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 enum {
 	UTF8MAX = 8,
@@ -53,10 +54,46 @@ show(char *s){
 }
 
 int
+isnotspace(int c){
+	return !isspace(c);
+}
+
+int
+getwhile(FILE *f, char *buf, int bufs, int(*p)(int)){
+	int i;
+	for(i=0; i<bufs; i++){
+		buf[i] = getc(f);
+		/* YUCK (but it is text) */
+		if(buf[i] == EOF) break;
+		if(!p(buf[i])) break;
+	}
+	ungetc(buf[i], stdin);
+	buf[i] = '\0';
+	return i;
+}
+
+int
+gettoken(char *buf, int len){
+	int s;
+	if(getwhile(stdin, buf, len, isspace) < 0)
+		return 0;
+	if((s = getwhile(stdin, buf, len, isnotspace)) < 0)
+		return 0;
+	return s;
+}
+
+int
 main(int argc, char **argv){
 	int i;
-	for(i=1;i<argc;i++){
-		show(argv[i]);
+	char buf[2*UTF8MAX];
+	if(argc == 1){
+		while(gettoken(buf, sizeof(buf))){
+			show(buf);
+		}
+	} else {
+		for(i=1;i<argc;i++){
+			show(argv[i]);
+		}
 	}
 	return 0;
 }
