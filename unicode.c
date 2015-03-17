@@ -23,7 +23,7 @@ utf8rune(unsigned char *u, Rune r){
 		/* everything else */
 		i = 0;
 		mask = 0x80;
-		while(r >= (256 - mask)/2){
+		while(r >= (256 - mask)/2 && mask < 0xfe){
 			buf[i] = 0x80 | (r & 0x3f);
 			r >>= 6;
 			i++;
