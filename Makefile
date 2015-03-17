@@ -1,7 +1,7 @@
 targets=$(patsubst %.c, bin/%, $(wildcard *.c))
 all: $(targets)
 
-bin/%: %.c bin
+bin/%: %.c | bin
 	cc $(CFLAGS) -o $@ $<
 
 bin:
