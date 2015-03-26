@@ -1,3 +1,5 @@
+CFLAGS=-Wall
+
 targets=$(patsubst %.c, bin/%, $(wildcard *.c))
 all: $(targets)
 
