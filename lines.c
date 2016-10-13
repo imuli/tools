@@ -3,6 +3,16 @@
 
 const char usage[] = "usage: lines {start} (end)\n";
 
+void
+write_or_die(int fd, const char *buf, size_t len){
+	int r;
+	while(len > 0){
+		r = write(fd, buf, len);
+		if(r < 0) exit(2);
+		len -= r;
+	}
+}
+
 int
 main(int argc, char **argv){
 	int start, lines, count, offset, more;
@@ -15,7 +25,7 @@ main(int argc, char **argv){
 		argv++;
 	}
 	if(argc != 2) {
-		write(2, usage, sizeof(usage));
+		write_or_die(2, usage, sizeof(usage));
 		return 1;
 	}
 	lines = atoi(argv[1]);
@@ -34,7 +44,7 @@ main(int argc, char **argv){
 			}
 		}
 		if(count >= start)
-			write(1, buf, offset);
+			write_or_die(1, buf, offset);
 	}
 	return 0;
 }
